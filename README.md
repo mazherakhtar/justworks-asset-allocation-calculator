@@ -1,54 +1,34 @@
-# justworks-asset-allocation-calculator
+# Asset allocation calculator
 
-This template should help get you started developing with Vue 3 in Vite.
+Vue 3 app that loads BTC and ETH exchange rates from the [Coinbase public API](https://docs.cdp.coinbase.com/exchange/reference/getexchangerates), lets you split investable assets between the two coins with linked sliders (always totaling 100%), and shows how much of each crypto that allocation implies.
 
-## Recommended IDE Setup
+## Stack
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- Vue 3 + TypeScript, Vite
+- No client-side router or global store; state lives in composables and session storage
 
-## Recommended Browser Setup
+## Decisions
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+**`sessionStorage` instead of route params or query strings:** Calculator inputs (amount, currency, BTC split) are UI preferences for the current tab, not shareable URLs. Session storage restores state on refresh which keeps history clean, and avoids vue-router for a single screen.
 
-## Type Support for `.vue` Imports in TS
+**No Pinia:** State is local to the calculator. One persisted object and fields exposed from composables. Component hierarchy is small, so a global store would only add complexity.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+**No vue-router:** The app has one view; the header and calculator mount directly from `App.vue`.
 
-## Customize configuration
+**UX:** Using sliders since there are only two allocation types and no assumptions need to be made for another allocation when adjusting the other. Investable amount shows a raw number while editing and formatted on blur for simplified user input. Exchange rates are read-only above the form so quotes are visible before changing allocation.
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+**Tests and HTTP:** View and composable specs stub `globalThis.fetch` to stay fast and deterministic. In a production codebase, [MSW](https://mswjs.io/) (or similar) would intercept the same requests with realistic handlers so tests exercise real fetch paths without hitting Coinbase.
 
-## Project Setup
+**Unit tests:** Small and readable over DRY. Helpers (e.g. mounting a composable) are inlined where needed, so some duplication across files is intentional.
+
+**Types vs runtime:** Coinbase responses are typed with `FiatCurrency` and related types in `src/types/coinbase.types.ts` for the supported USD/GBP/EUR currencies. Session JSON is validated in `parseCalculatorSession`; API JSON is trusted after a successful `fetch` (no response schema validation). In production, [Zod](https://zod.dev/) (or similar) at fetch and storage boundaries would parse external JSON once and keep runtime checks aligned with those types.
+## Commands
 
 ```sh
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
+npm run dev      # local dev server
+npm run build    # type-check + production build
 npm run test:unit
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
 npm run lint
+npm run format
 ```
