@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
-import AllocationRow from './AllocationRow.vue'
+import AllocationSelector from './AllocationSelector.vue'
 
-describe('AllocationRow', () => {
+describe('AllocationSelector', () => {
   it('renders symbol, percent, and amount with units', () => {
-    const wrapper = mount(AllocationRow, {
+    const wrapper = mount(AllocationSelector, {
       props: {
         symbol: 'BTC',
         amount: 1.5,
@@ -19,7 +19,7 @@ describe('AllocationRow', () => {
   })
 
   it('omits units when amount is missing', () => {
-    const wrapper = mount(AllocationRow, {
+    const wrapper = mount(AllocationSelector, {
       props: { symbol: 'ETH', modelValue: 28 },
     })
 
@@ -27,7 +27,7 @@ describe('AllocationRow', () => {
   })
 
   it('updates displayed percent when the slider moves', async () => {
-    const wrapper = mount(AllocationRow, {
+    const wrapper = mount(AllocationSelector, {
       props: { symbol: 'BTC', modelValue: 40 },
     })
 

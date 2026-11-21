@@ -7,7 +7,7 @@ import {
   type AllocationSymbol,
   type CoinbaseExchangeRatesResponse,
 } from '@/types/coinbase.types'
-import AllocationRow from '@/components/AllocationRow.vue'
+import AllocationSelector from '@/components/AllocationSelector.vue'
 import { getSharesForAllocation } from '@/utils/allocationUtils'
 import { useCalculatorSession } from '@/composables/useCalculatorSession'
 import { formatDecimal, formatFiatAmount, parseFiatInput } from '@/utils/formatUtils'
@@ -75,10 +75,10 @@ const sharesForSymbol = (symbol: AllocationSymbol) => {
       </div>
 
       <div class="form-row">
-        <AllocationRow symbol="BTC" v-model="btcRatio" :amount="sharesForSymbol('BTC')" />
+        <AllocationSelector symbol="BTC" v-model="btcRatio" :amount="sharesForSymbol('BTC')" />
       </div>
       <div class="form-row">
-        <AllocationRow symbol="ETH" v-model="ethRatio" :amount="sharesForSymbol('ETH')" />
+        <AllocationSelector symbol="ETH" v-model="ethRatio" :amount="sharesForSymbol('ETH')" />
       </div>
     </form>
   </section>
